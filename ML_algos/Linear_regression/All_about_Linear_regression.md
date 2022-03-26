@@ -14,10 +14,7 @@
     
 4. Graphically represented by straight line, and mathematically by equation - 
 ##### <center>target_or_ind_var(y) = intercept(a) + LR_coeff(a1) * ind_var_or_predictor(x1) + random_error(e)
-    
-    Here, 
-    **a1** is the slope/gradient of the line, and can be +ve/-ve/zero. 
-    **a** is the intecept, can be +ve/-ve/zero.
+    Here, **a1** is the slope/gradient of the line, and can be +ve/-ve/zero. **a** is the intecept, can be +ve/-ve/zero.
          
 <img src="linear_reg_straight_line.jpeg" width="300" height="300">
 
@@ -82,7 +79,7 @@ import numpy as np
 # Define dataset. Salary = y and exp = x
 experience = np.array([2.4,5.0,1.5,3.8,8.7,3.6,1.2,8.1,2.5,5,1.6,1.6,2.4,3.9,5.4])
 salary = np.array([2.1,4.7,1.7,3.6,8.7,3.2,1.0,8.0,2.4,6,1.1,1.3,2.4,3.9,4.8])
-n = np.size(exp)
+n = np.size(experience)
 
 # Plot the data points
 plt.scatter(experience,salary, color = 'red')
@@ -148,6 +145,7 @@ plt.ylabel("Error")
 
 
 ```python
+# Optimum/best weights/co-eff
 print(a0, a1)
 ```
 
@@ -226,8 +224,3 @@ print("MSE", Mse)
     Intercept -0.2135415007169028
     MSE 0.1278581771192891
     
-
-
-```python
-
-```
