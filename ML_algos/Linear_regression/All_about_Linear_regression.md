@@ -3,7 +3,7 @@
 **Linear** means straight, and **Regression** means finding relationship between ind and dep var
 
     
-1. It's a statistical method used for predictive analysis. It's a supervised learning technique
+1. It's a statistical method used for predictive analysis. It's a supervised learning technique.
  
     
 2. It predicts only continuous/real/numeric values(Eg: Sales,Salary,etc..). Example: Predicting the salary(y) of an employee given the years of exp(x).
@@ -14,7 +14,7 @@
     
 4. Graphically represented by straight line, and mathematically by equation - 
 ##### <center>target_or_ind_var(y) = intercept(a) + LR_coeff(a1) * ind_var_or_predictor(x1) + random_error(e)
-    Here, **a1** is the slope/gradient of the line, and can be +ve/-ve/zero. **a** is the intecept, can be +ve/-ve/zero.
+    Here, <br>a1 is the slope/gradient of the line, and can be +ve/-ve/zero. <br> a is the intercept, and can be +ve/-ve/zero.
          
 <img src="linear_reg_straight_line.jpeg" width="300" height="300">
 
@@ -26,7 +26,7 @@
 6. **LR line** shows two type of relationship b/w dep and ind var. If y increases as x increases then **Positive Linear Relationship**, and if y descreases as x increases then **Negative Linear Relationship**.
 
     
-7. The purpose is to find the best fit line, meaning, the error b/w the ind and dep var should be minimized, and the regression line should have least error. To do that, we have weights/co-eff of the line(a and a1). So, we need to find the best co-eff of line by experimenting with diff values. To get the best co-eff, we use **cost function.**
+7. The purpose is to find the best fit line, meaning, the diff b/w the actual and predicted value should be minimized, and the regression line should have least error. To do that, we have weights/co-eff of the line(a and a1). So, we need to find the best co-eff of line by experimenting with diff values. To get the best co-eff, we use **cost function.**
 
     
 8. <u>**Cost funtion**</u>:
@@ -38,7 +38,7 @@
     
 <img src="mse_equation.jpg" width="300" height="300">
 
-9. <u>**Residual**</u>: The diff between the actual and predicted values. If the points are far from regression line then high residual, and vice versa.
+9. <u>**Residual**</u>: The diff between the actual and predicted values. If the points in the scatter plot are far from regression line then high residual, and vice versa.
 
 
 10. So here, we have to find out the best co-eff, also means, iterating over diff value of weights to minimize the MSE/Cost function or in other words to reduce the residuals. To do this, we use **Gradient descent method**.
@@ -48,7 +48,7 @@
      - Main function is to update the co-eff of the line, and minimize the Cost function/MSE/Residuals. 
      - So mathematically, it's a minimization problem, meaning, we have to reach some minimum point of the function, also called convergence. 
      - It starts by randomly selecting the values of weights/co-eff, and iteratively reaching the point where the MSE is least, basically finding the minima of the cost function.
-     - In GD algo, the speed of reaching the minima point is dependent on learning rate(alpha), which means, the number of steps you take for each iteration. It means, changing one weight/co-eff of the line, and keeping other constant. And for each iteration, we calculate MSE. It will go on until we find the best value of co-eff.
+     - In GD algo, the speed of reaching the minima point is dependent on learning rate(alpha), which means, the number of steps you take for each iteration. It means, changing one weight/co-eff of the line, and keeping other constant. And for each iteration, we calculate MSE. It will go on until we find the best value of co-eff or least value of MSE.
      - Here we take partial derivatives(also called gradient) of each weights, and keep updating the values as per the learning rate.
      - If we select the optimum value of learning rate, then our GD algo will converge in less no. of iterations. So here learning rate defines the performance of GD algo.
 
@@ -61,11 +61,12 @@
     - D - Learn more about R-squared
 
 13. <u>**Assumptions**</u>:
-    - Linear relationship b/w y and x.
-    - Small or no multicollinearity b/w ind var
+    - Linear relationship b/w y and x, meaning, y should be directly or inversely porpotional to each other, in other terms relation between these two var can be shown by a stragiht line.
+    - Small or no multicollinearity b/w ind var, meaning, there should not be any corellation b/w ind vars.
     - Homogeneity of variance: The error term doesn't change much or is constant as the value of ind var changes.
     - The error terms must be normally distributed.
     - No autocorellation in error terms.
+    - Each observation/row is ind of each other
 
 ## Implementation of Simple LR
 
@@ -224,3 +225,16 @@ print("MSE", Mse)
     Intercept -0.2135415007169028
     MSE 0.1278581771192891
     
+
+## Summary
+1. In Regression, we plot a graph between the variables which best fit the given data points. 
+2. Linear regression shows the linear relationship between the independent variable (X-axis) and the dependent variable (Y-axis).
+3. To calculate best-fit line linear regression uses a traditional slope-intercept form. A regression line can be a Positive Linear Relationship or a Negative Linear Relationship.
+4. The goal of the linear regression algorithm is to get the best values for a0 and a1 to find the best fit line and the best fit line should have the least error. 
+5. In Linear Regression, Mean Squared Error (MSE) cost function is used, which helps to figure out the best possible values for a0 and a1, which provides the best fit line for the data points. 
+6. Using the MSE function, we will change the values of a0 and a1 such that the MSE value settles at the minima. Gradient descent is a method of updating a0 and a1 to minimize the cost function (MSE)
+
+
+```python
+
+```
