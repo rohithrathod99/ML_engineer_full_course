@@ -56,7 +56,7 @@
      - Why Bowl shape graph? Because Cost function in LR is quadratic equation(MSE has square term in equation), and by property of QE, when it is plotted on the graph with diff values of var, it's always convex/parabolic shape(Bowl shape) and they bound to have one minima.
      - Learning step/rate decreases as we progress towards our objective(Here, Global minima), so that we don't miss and oscillate across minima. This algo is called Bold Driver algo(Type of GD).
 
-<img src="gradient_descent_convex.png" width="500" height="500">
+<img src="gradient_descent_convex.png" width="700" height="600">
 
 
 12. **<u>Model performance**</u>:
@@ -349,8 +349,3 @@ print("MSE", Mse)
     - Trying out all the possible ways to solve a given problem, and find the best solution. For eg: Travelling salesman problem(TSP), we need to visit 10 cities, Brute force will calculate all the possible distances to the 10 cities and select the least one. But this may not be the efficient way to solve the problem.
     - Time complexity of BF algo is O(n*m)
     - Slow, inefficient and relies more on computing power of system instead of good algo design.
-
-
-```python
-
-```
