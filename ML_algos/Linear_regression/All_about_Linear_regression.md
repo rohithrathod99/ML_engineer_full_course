@@ -297,7 +297,7 @@ print("MSE", Mse)
     - SST/Total error = SSR + SSE.
     - Most fit line is where SSE = 0. In that case, SSR = SST, which also means SSR/SST = 1. We can say Model performance is good as SSE = 0 and SSR/SST = 1. So, this ratio measures the goodness of fit, also called coeff of determination(R-square). Poor fit means large SSE, which means, SSR/SST close to 0. So, it ranges b/w 0(poor fit) and 1(good fit).
     
-<img src="errors_graph.png" width="600" height="600">
+<img src="errors_graph.png" width="800" height="400">
 
 10. **R-square**: 
     - How much of the total variance in our dep var(y) our model is able to explain is measured by R-square. 
