@@ -56,7 +56,7 @@
      - Why Bowl shape graph? Because Cost function in LR is quadratic equation(MSE has square term in equation), and by property of QE, when it is plotted on the graph with diff values of var, it's always convex/parabolic shape(Bowl shape) and they bound to have one minima.
      - Learning step/rate decreases as we progress towards our objective(Here, Global minima), so that we don't miss and oscillate across minima. This algo is called Bold Driver algo(Type of GD).
 
-<img src="gradient_descent_convex.png" width="700" height="600">
+<img src="gradient_descent_convex.png" width="700" height="400">
 
 
 12. **<u>Model performance**</u>:
