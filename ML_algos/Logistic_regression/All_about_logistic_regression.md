@@ -47,10 +47,8 @@ pd.options.display.width=None
 
 ```python
 df = pd.read_csv("diabetes.csv")
-df.head()
+display(df.head())
 ```
-
-
 
 
 <div>
@@ -148,15 +146,12 @@ df.head()
 </div>
 
 
-
 ### Desciptive statistics of all the numeric columns
 
 
 ```python
-df.describe().transpose()
+display(df.describe().transpose())
 ```
-
-
 
 
 <div>
@@ -292,14 +287,11 @@ df.describe().transpose()
 </div>
 
 
-
 ### Check for missing values, datatypes of cols, memory, and NULL values
 
 
 ```python
-df.info()
-print("================================================")
-print("Any NULL values: ", df.isnull().values.any())
+display(df.info())
 ```
 
     <class 'pandas.core.frame.DataFrame'>
@@ -318,9 +310,11 @@ print("Any NULL values: ", df.isnull().values.any())
      8   Outcome                   768 non-null    int64  
     dtypes: float64(2), int64(7)
     memory usage: 54.1 KB
-    ================================================
-    Any NULL values:  False
     
+
+
+    None
+
 
 ### Pairplot to see the Distribution of all the vars, and scatter plot b/w 2 var
 
