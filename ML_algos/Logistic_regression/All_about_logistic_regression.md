@@ -4,7 +4,7 @@
 
 **Supervised | Uses the concept of LR(Straight line equation, but modified to give results b/w 0 and 1) | Mostly used for Binary classification | Predict categorical/discrete values | Solves classification problems | Gives probabilistic value b/w 0 & 1 | Fit S shaped logistic/Sigmoid function which maps predicted value to probabalities(0 to 1) | To classify, we need to set some threshold | Types of Log reg - 1. Binomial/Multinomial(Dep var has unordered 2 or more values) 2. Ordinal(Dep var has 3 or more ordered values, for eg, low, medium, high)**
 
-# Important pointers
+### Important pointers
 1. BFL to sigmoid curve(S shape), where BFL can go from -inf to +inf but sigmoid can go from 0 to 1.
 2. For multiclass, multiple S curve cut each other, each curve gives prob of one class(One vs rest - OVR)
 3. Linear model is passed to the logistic function [ y = 1/(1+e^-x) ], result of which ranges from 0 to 1(also denoted as p). We should decide the cut-off/threshold.
@@ -23,6 +23,7 @@
 import pandas as pd
 import numpy as np
 import seaborn as sns
+from tabulate import tabulate
 import matplotlib.pyplot as plt
 %matplotlib inline
 from sklearn.model_selection import train_test_split
@@ -47,245 +48,37 @@ pd.options.display.width=None
 
 ```python
 df = pd.read_csv("diabetes.csv")
-display(df.head())
+print(df.head().to_markdown()) 
 ```
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Pregnancies</th>
-      <th>Glucose</th>
-      <th>BloodPressure</th>
-      <th>SkinThickness</th>
-      <th>Insulin</th>
-      <th>BMI</th>
-      <th>DiabetesPedigreeFunction</th>
-      <th>Age</th>
-      <th>Outcome</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>6</td>
-      <td>148</td>
-      <td>72</td>
-      <td>35</td>
-      <td>0</td>
-      <td>33.6</td>
-      <td>0.627</td>
-      <td>50</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1</td>
-      <td>85</td>
-      <td>66</td>
-      <td>29</td>
-      <td>0</td>
-      <td>26.6</td>
-      <td>0.351</td>
-      <td>31</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>8</td>
-      <td>183</td>
-      <td>64</td>
-      <td>0</td>
-      <td>0</td>
-      <td>23.3</td>
-      <td>0.672</td>
-      <td>32</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1</td>
-      <td>89</td>
-      <td>66</td>
-      <td>23</td>
-      <td>94</td>
-      <td>28.1</td>
-      <td>0.167</td>
-      <td>21</td>
-      <td>0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0</td>
-      <td>137</td>
-      <td>40</td>
-      <td>35</td>
-      <td>168</td>
-      <td>43.1</td>
-      <td>2.288</td>
-      <td>33</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
+    |    |   Pregnancies |   Glucose |   BloodPressure |   SkinThickness |   Insulin |   BMI |   DiabetesPedigreeFunction |   Age |   Outcome |
+    |---:|--------------:|----------:|----------------:|----------------:|----------:|------:|---------------------------:|------:|----------:|
+    |  0 |             6 |       148 |              72 |              35 |         0 |  33.6 |                      0.627 |    50 |         1 |
+    |  1 |             1 |        85 |              66 |              29 |         0 |  26.6 |                      0.351 |    31 |         0 |
+    |  2 |             8 |       183 |              64 |               0 |         0 |  23.3 |                      0.672 |    32 |         1 |
+    |  3 |             1 |        89 |              66 |              23 |        94 |  28.1 |                      0.167 |    21 |         0 |
+    |  4 |             0 |       137 |              40 |              35 |       168 |  43.1 |                      2.288 |    33 |         1 |
+    
 
 ### Desciptive statistics of all the numeric columns
 
 
 ```python
-display(df.describe().transpose())
+print(df.describe().transpose().to_markdown())
 ```
 
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>count</th>
-      <th>mean</th>
-      <th>std</th>
-      <th>min</th>
-      <th>25%</th>
-      <th>50%</th>
-      <th>75%</th>
-      <th>max</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Pregnancies</th>
-      <td>768.0</td>
-      <td>3.845052</td>
-      <td>3.369578</td>
-      <td>0.000</td>
-      <td>1.00000</td>
-      <td>3.0000</td>
-      <td>6.00000</td>
-      <td>17.00</td>
-    </tr>
-    <tr>
-      <th>Glucose</th>
-      <td>768.0</td>
-      <td>120.894531</td>
-      <td>31.972618</td>
-      <td>0.000</td>
-      <td>99.00000</td>
-      <td>117.0000</td>
-      <td>140.25000</td>
-      <td>199.00</td>
-    </tr>
-    <tr>
-      <th>BloodPressure</th>
-      <td>768.0</td>
-      <td>69.105469</td>
-      <td>19.355807</td>
-      <td>0.000</td>
-      <td>62.00000</td>
-      <td>72.0000</td>
-      <td>80.00000</td>
-      <td>122.00</td>
-    </tr>
-    <tr>
-      <th>SkinThickness</th>
-      <td>768.0</td>
-      <td>20.536458</td>
-      <td>15.952218</td>
-      <td>0.000</td>
-      <td>0.00000</td>
-      <td>23.0000</td>
-      <td>32.00000</td>
-      <td>99.00</td>
-    </tr>
-    <tr>
-      <th>Insulin</th>
-      <td>768.0</td>
-      <td>79.799479</td>
-      <td>115.244002</td>
-      <td>0.000</td>
-      <td>0.00000</td>
-      <td>30.5000</td>
-      <td>127.25000</td>
-      <td>846.00</td>
-    </tr>
-    <tr>
-      <th>BMI</th>
-      <td>768.0</td>
-      <td>31.992578</td>
-      <td>7.884160</td>
-      <td>0.000</td>
-      <td>27.30000</td>
-      <td>32.0000</td>
-      <td>36.60000</td>
-      <td>67.10</td>
-    </tr>
-    <tr>
-      <th>DiabetesPedigreeFunction</th>
-      <td>768.0</td>
-      <td>0.471876</td>
-      <td>0.331329</td>
-      <td>0.078</td>
-      <td>0.24375</td>
-      <td>0.3725</td>
-      <td>0.62625</td>
-      <td>2.42</td>
-    </tr>
-    <tr>
-      <th>Age</th>
-      <td>768.0</td>
-      <td>33.240885</td>
-      <td>11.760232</td>
-      <td>21.000</td>
-      <td>24.00000</td>
-      <td>29.0000</td>
-      <td>41.00000</td>
-      <td>81.00</td>
-    </tr>
-    <tr>
-      <th>Outcome</th>
-      <td>768.0</td>
-      <td>0.348958</td>
-      <td>0.476951</td>
-      <td>0.000</td>
-      <td>0.00000</td>
-      <td>0.0000</td>
-      <td>1.00000</td>
-      <td>1.00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
+    |                          |   count |       mean |        std |    min |      25% |      50% |       75% |    max |
+    |:-------------------------|--------:|-----------:|-----------:|-------:|---------:|---------:|----------:|-------:|
+    | Pregnancies              |     768 |   3.84505  |   3.36958  |  0     |  1       |   3      |   6       |  17    |
+    | Glucose                  |     768 | 120.895    |  31.9726   |  0     | 99       | 117      | 140.25    | 199    |
+    | BloodPressure            |     768 |  69.1055   |  19.3558   |  0     | 62       |  72      |  80       | 122    |
+    | SkinThickness            |     768 |  20.5365   |  15.9522   |  0     |  0       |  23      |  32       |  99    |
+    | Insulin                  |     768 |  79.7995   | 115.244    |  0     |  0       |  30.5    | 127.25    | 846    |
+    | BMI                      |     768 |  31.9926   |   7.88416  |  0     | 27.3     |  32      |  36.6     |  67.1  |
+    | DiabetesPedigreeFunction |     768 |   0.471876 |   0.331329 |  0.078 |  0.24375 |   0.3725 |   0.62625 |   2.42 |
+    | Age                      |     768 |  33.2409   |  11.7602   | 21     | 24       |  29      |  41       |  81    |
+    | Outcome                  |     768 |   0.348958 |   0.476951 |  0     |  0       |   0      |   1       |   1    |
+    
 
 ### Check for missing values, datatypes of cols, memory, and NULL values
 
@@ -326,7 +119,7 @@ sns.pairplot(df, diag_kind = "kde")         # Kernel density estimate
 
 
 
-    <seaborn.axisgrid.PairGrid at 0x139f91f34f0>
+    <seaborn.axisgrid.PairGrid at 0x1e917229610>
 
 
 
@@ -341,155 +134,21 @@ sns.pairplot(df, diag_kind = "kde")         # Kernel density estimate
 
 ```python
 corr = df.corr(method="pearson")
-corr
+print(corr.to_markdown())
 ```
 
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Pregnancies</th>
-      <th>Glucose</th>
-      <th>BloodPressure</th>
-      <th>SkinThickness</th>
-      <th>Insulin</th>
-      <th>BMI</th>
-      <th>DiabetesPedigreeFunction</th>
-      <th>Age</th>
-      <th>Outcome</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Pregnancies</th>
-      <td>1.000000</td>
-      <td>0.129459</td>
-      <td>0.141282</td>
-      <td>-0.081672</td>
-      <td>-0.073535</td>
-      <td>0.017683</td>
-      <td>-0.033523</td>
-      <td>0.544341</td>
-      <td>0.221898</td>
-    </tr>
-    <tr>
-      <th>Glucose</th>
-      <td>0.129459</td>
-      <td>1.000000</td>
-      <td>0.152590</td>
-      <td>0.057328</td>
-      <td>0.331357</td>
-      <td>0.221071</td>
-      <td>0.137337</td>
-      <td>0.263514</td>
-      <td>0.466581</td>
-    </tr>
-    <tr>
-      <th>BloodPressure</th>
-      <td>0.141282</td>
-      <td>0.152590</td>
-      <td>1.000000</td>
-      <td>0.207371</td>
-      <td>0.088933</td>
-      <td>0.281805</td>
-      <td>0.041265</td>
-      <td>0.239528</td>
-      <td>0.065068</td>
-    </tr>
-    <tr>
-      <th>SkinThickness</th>
-      <td>-0.081672</td>
-      <td>0.057328</td>
-      <td>0.207371</td>
-      <td>1.000000</td>
-      <td>0.436783</td>
-      <td>0.392573</td>
-      <td>0.183928</td>
-      <td>-0.113970</td>
-      <td>0.074752</td>
-    </tr>
-    <tr>
-      <th>Insulin</th>
-      <td>-0.073535</td>
-      <td>0.331357</td>
-      <td>0.088933</td>
-      <td>0.436783</td>
-      <td>1.000000</td>
-      <td>0.197859</td>
-      <td>0.185071</td>
-      <td>-0.042163</td>
-      <td>0.130548</td>
-    </tr>
-    <tr>
-      <th>BMI</th>
-      <td>0.017683</td>
-      <td>0.221071</td>
-      <td>0.281805</td>
-      <td>0.392573</td>
-      <td>0.197859</td>
-      <td>1.000000</td>
-      <td>0.140647</td>
-      <td>0.036242</td>
-      <td>0.292695</td>
-    </tr>
-    <tr>
-      <th>DiabetesPedigreeFunction</th>
-      <td>-0.033523</td>
-      <td>0.137337</td>
-      <td>0.041265</td>
-      <td>0.183928</td>
-      <td>0.185071</td>
-      <td>0.140647</td>
-      <td>1.000000</td>
-      <td>0.033561</td>
-      <td>0.173844</td>
-    </tr>
-    <tr>
-      <th>Age</th>
-      <td>0.544341</td>
-      <td>0.263514</td>
-      <td>0.239528</td>
-      <td>-0.113970</td>
-      <td>-0.042163</td>
-      <td>0.036242</td>
-      <td>0.033561</td>
-      <td>1.000000</td>
-      <td>0.238356</td>
-    </tr>
-    <tr>
-      <th>Outcome</th>
-      <td>0.221898</td>
-      <td>0.466581</td>
-      <td>0.065068</td>
-      <td>0.074752</td>
-      <td>0.130548</td>
-      <td>0.292695</td>
-      <td>0.173844</td>
-      <td>0.238356</td>
-      <td>1.000000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+    |                          |   Pregnancies |   Glucose |   BloodPressure |   SkinThickness |    Insulin |       BMI |   DiabetesPedigreeFunction |        Age |   Outcome |
+    |:-------------------------|--------------:|----------:|----------------:|----------------:|-----------:|----------:|---------------------------:|-----------:|----------:|
+    | Pregnancies              |     1         | 0.129459  |       0.141282  |      -0.0816718 | -0.0735346 | 0.0176831 |                 -0.0335227 |  0.544341  | 0.221898  |
+    | Glucose                  |     0.129459  | 1         |       0.15259   |       0.0573279 |  0.331357  | 0.221071  |                  0.137337  |  0.263514  | 0.466581  |
+    | BloodPressure            |     0.141282  | 0.15259   |       1         |       0.207371  |  0.0889334 | 0.281805  |                  0.0412649 |  0.239528  | 0.0650684 |
+    | SkinThickness            |    -0.0816718 | 0.0573279 |       0.207371  |       1         |  0.436783  | 0.392573  |                  0.183928  | -0.11397   | 0.0747522 |
+    | Insulin                  |    -0.0735346 | 0.331357  |       0.0889334 |       0.436783  |  1         | 0.197859  |                  0.185071  | -0.042163  | 0.130548  |
+    | BMI                      |     0.0176831 | 0.221071  |       0.281805  |       0.392573  |  0.197859  | 1         |                  0.140647  |  0.0362419 | 0.292695  |
+    | DiabetesPedigreeFunction |    -0.0335227 | 0.137337  |       0.0412649 |       0.183928  |  0.185071  | 0.140647  |                  1         |  0.0335613 | 0.173844  |
+    | Age                      |     0.544341  | 0.263514  |       0.239528  |      -0.11397   | -0.042163  | 0.0362419 |                  0.0335613 |  1         | 0.238356  |
+    | Outcome                  |     0.221898  | 0.466581  |       0.0650684 |       0.0747522 |  0.130548  | 0.292695  |                  0.173844  |  0.238356  | 1         |
+    
 
 ### Heatmap for coeff of correlation
 
