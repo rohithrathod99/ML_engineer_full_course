@@ -4,16 +4,19 @@
 
 **Supervised | Uses the concept of LR(Straight line equation, but modified to give results b/w 0 and 1) | Mostly used for Binary classification | Predict categorical/discrete values | Solves classification problems | Gives probabilistic value b/w 0 & 1 | Fit S shaped logistic/Sigmoid function which maps predicted value to probabalities(0 to 1) | To classify, we need to set some threshold | Types of Log reg - 1. Binomial/Multinomial(Dep var has unordered 2 or more values) 2. Ordinal(Dep var has 3 or more ordered values, for eg, low, medium, high)**
 
-## Important pointers
+# Important pointers
 1. BFL to sigmoid curve(S shape), where BFL can go from -inf to +inf but sigmoid can go from 0 to 1.
 2. For multiclass, multiple S curve cut each other, each curve gives prob of one class(One vs rest - OVR)
-3. Linear model is passed to the logistic function [ y = 1/(1+e^-x) ], result of which ramges from 0 to 1(also denoted as p). We should decide the cut-off/threshold.
-4. Log loss/binary cross-entropy is the cost function, lower the better. KA - https://www.analyticsvidhya.com/blog/2020/11/binary-cross-entropy-aka-log-loss-the-cost-function-used-in-logistic-regression/
+3. Linear model is passed to the logistic function [ y = 1/(1+e^-x) ], result of which ranges from 0 to 1(also denoted as p). We should decide the cut-off/threshold.
+4. Log loss/binary cross-entropy is the cost function, lower the better. README - [link]( https://www.analyticsvidhya.com/blog/2020/11/binary-cross-entropy-aka-log-loss-the-cost-function-used-in-logistic-regression/)
 5. Since sigmoid function is non linear, so MSE can't be used as cost function because it's difficult to get global minima by GD in non-linear case.
 6. Outlier has to be addressed because it's linear model. More the outlier, more the log loss.
 7. Adv: Multiclass | also gived prob of each class | One of the best algo | quick to learn | Fast | White box | resitance to overfit | Interpret model coeff as feature importane.|
 8. Disadv: Data dist should be linearly separable because it contructs linear boundaries.
 9. L1 and L2 regularization technique can be used if overfit
+10. README - [link](https://www.analyticsvidhya.com/blog/2021/10/building-an-end-to-end-logistic-regression-model/)
+
+### Import Packages
 
 
 ```python
@@ -30,7 +33,16 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_auc_score 
 from sklearn.metrics import roc_curve
 from sklearn.metrics import classification_report
+import warnings
+warnings.simplefilter('ignore')
+
+# Remove max col display limit
+pd.options.display.max_columns = None
+# Print all cols in single line
+pd.options.display.width=None
 ```
+
+### Read CSV file
 
 
 ```python
@@ -137,9 +149,10 @@ df.head()
 
 
 
+### Desciptive statistics of all the numeric columns
+
 
 ```python
-# Desciptive statistics of numeric columns
 df.describe().transpose()
 ```
 
@@ -280,9 +293,10 @@ df.describe().transpose()
 
 
 
+### Check for missing values, datatypes of cols, memory, and NULL values
+
 
 ```python
-# Check for missing values
 df.info()
 print("================================================")
 print("Any NULL values: ", df.isnull().values.any())
@@ -308,28 +322,30 @@ print("Any NULL values: ", df.isnull().values.any())
     Any NULL values:  False
     
 
+### Pairplot to see the Distribution of all the vars, and scatter plot b/w 2 var
+
 
 ```python
-# Distribution and scatter plot b/w 2 var
 sns.pairplot(df, diag_kind = "kde")         # Kernel density estimate
 ```
 
 
 
 
-    <seaborn.axisgrid.PairGrid at 0x143eafb6c10>
+    <seaborn.axisgrid.PairGrid at 0x139f91f34f0>
 
 
 
 
     
-![png](output_7_1.png)
+![png](output_12_1.png)
     
 
+
+### Pearson coeff of correlation
 
 
 ```python
-# Pearson coeff of correlation
 corr = df.corr(method="pearson")
 corr
 ```
@@ -481,9 +497,10 @@ corr
 
 
 
+### Heatmap for coeff of correlation
+
 
 ```python
-# Heatmap for corr
 fig, ax = plt.subplots(figsize=(10,10))  
 sns.heatmap(corr, annot = True, xticklabels= corr.columns, yticklabels= corr.columns, linewidths= 1, ax=ax)
 ```
@@ -497,13 +514,14 @@ sns.heatmap(corr, annot = True, xticklabels= corr.columns, yticklabels= corr.col
 
 
     
-![png](output_9_1.png)
+![png](output_16_1.png)
     
 
 
+### Check if the target column is balanced or not
+
 
 ```python
-# Check if the target data is balanced or not
 sns.countplot(data = df, x = "Outcome")
 ```
 
@@ -516,62 +534,55 @@ sns.countplot(data = df, x = "Outcome")
 
 
     
-![png](output_10_1.png)
+![png](output_18_1.png)
     
 
 
+## Implement Logistic Regression using Sklearn package
+
 
 ```python
+# Conver to numpy arrays
 np_array = df.values
 X = np_array[:,0:7]
 Y = np_array[:,8]
-```
 
-
-```python
-# Why we need scaling?
-# sc = StandardScaler()
-# X_scaled = sc.fit_transform(X)
-```
-
-
-```python
 # Any number in random state is fine, signifies, whenever we run the code, train and test data should be same.
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=42)
 
+# Create object and train the model
 log_reg = LogisticRegression()
 log_reg.fit(x_train, y_train)
+
+# Predict the class
+y_predict = log_reg.predict(x_test)
 ```
 
-    C:\Apps\anaconda3\lib\site-packages\sklearn\linear_model\_logistic.py:763: ConvergenceWarning: lbfgs failed to converge (status=1):
-    STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-    
-    Increase the number of iterations (max_iter) or scale the data as shown in:
-        https://scikit-learn.org/stable/modules/preprocessing.html
-    Please also refer to the documentation for alternative solver options:
-        https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-      n_iter_i = _check_optimize_result(
-    
-
-
-
-
-    LogisticRegression()
-
-
+### Confusion matrix
+   - TP, TN, FP/Type 1 error, and FN/Type 2 error
+   - Accuracy: TP + TN / no. of rows
+       + Not a good metric in case of imbalanced target class
+   - Precision: TP / ( TP + FP )        
+       + Used when FP is of higher concern, for eg, recommendation engine, suggesting irrelevant content to user
+   - Recall: TP / ( TP + FN )
+       + Used when FN is more concerned, for eg, medical case, predicting negative result for infected person
+   - Combine both - F1 score: 
+      + Harmonic mean of Precision and recall. F1-score = 2 * P * R / (P + R) 
+      + Less interpretability, can't rely because it won't say which one is better, precision or recall? So, always use with other metrics.
 
 
 ```python
-y_predict = log_reg.predict(x_test)
 plot_confusion_matrix(log_reg, x_test, y_test)  
 plt.show()
 ```
 
 
     
-![png](output_14_0.png)
+![png](output_22_0.png)
     
 
+
+### Accuracy and AUC of Model
 
 
 ```python
@@ -584,6 +595,17 @@ print("AUC-ROC score is: {}".format(roc_auc))
     Model accuracy is: 0.75
     AUC-ROC score is: 0.7221633085896076
     
+
+### Plot ROC-AUC curve
+   - Probability curve and AUC represent measure of separability(how well model dintinguish b/w classes). Higher the AUC, better the model
+   - TPR/Recall/Sensitivity: TP / ( TP + FN )
+   - FPR: FP / ( FP + TN ). Also,  1 - Specificity 
+   - AUC: 1 - Best | 0 - worst, Predicting opp classes | 0.5 - No class separation capacity
+   - Specificity: TN / ( TN + FP ).
+   - When AUC = 0.72(threshold as 0.5), meaning, 72% chance that the model will be able to predict correct class.
+   - Sensitivity and Specificity are inversely propotional because when we increase threshold, TP increases and vice versa.
+   - For multiclass, we plot AUC of One vs rest(OVR)
+   - README - [Link](https://towardsdatascience.com/understanding-auc-roc-curve-68b2303cc9c5)
 
 
 ```python
@@ -601,9 +623,11 @@ plt.show()
 
 
     
-![png](output_16_0.png)
+![png](output_26_0.png)
     
 
+
+### Summary of Classification report
 
 
 ```python
